@@ -1,0 +1,3 @@
+[submodule "meshgen"]
+	path = meshgen
+	url = https://github.com/buresjan/meshgen
