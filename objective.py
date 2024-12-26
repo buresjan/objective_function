@@ -39,7 +39,8 @@ def move_files(filename):
         ["angle", "dimensions", "tmp", "geometry"], ["angle", "dim", "val", "geom"]
     ):
         # Source path
-        source_path = f"/home/jan/objective-function/output/{prefix}_{filename}.txt"
+        # source_path = f"/home/jan/objective-function/output/{prefix}_{filename}.txt"
+        source_path = f"/home/jan/objective-function/{prefix}_{filename}.txt"
 
         # Destination path
         destination_path = f"/home/jan/gp/gp3/mnt/gp3/home/bures/tnl-lbm/sim_NSE/{directory}/{prefix}_{filename}.txt"
