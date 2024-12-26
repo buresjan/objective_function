@@ -63,7 +63,7 @@ offsets = np.array(
 )
 
 
-def shear_rate(x, constraints=None):
+def shear_rate(x, constraints=(0.0, 0.78)):
     if constraints is not None:
         limit_low, limit_up = constraints
         if np.any(x < limit_low) or np.any(x > limit_up):

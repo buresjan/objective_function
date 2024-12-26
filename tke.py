@@ -68,7 +68,7 @@ offsets = np.array(
 )
 
 
-def tke(x, constraints=None):
+def tke(x, constraints=(0.0, 0.78)):
     if constraints is not None:
         limit_low, limit_up = constraints
         if np.any(x < limit_low) or np.any(x > limit_up):
