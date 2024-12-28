@@ -164,10 +164,10 @@ def count_lines_and_remove(file_path):
 
 
 def determine_lpa_split(name, center_x, center_z):
-    template_file = "/home/jan/opti_frame/objective-function/lpa-to-rpa-template.py"
-    filled_file = f"/home/jan/opti_frame/objective-function/tmp/lpa-to-rpa-filled_{name}.py"
-    lpa_csv = f"/home/jan/opti_frame/tmp/objective-function/LPA_{name}.csv"
-    rpa_csv = f"/home/jan/opti_frame/tmp/objective-function/RPA_{name}.csv"
+    template_file = "/home/jan/opti_frame/objective_function/lpa-to-rpa-template.py"
+    filled_file = f"/home/jan/opti_frame/objective_function/tmp/lpa-to-rpa-filled_{name}.py"
+    lpa_csv = f"/home/jan/opti_frame/tmp/objective_function/LPA_{name}.csv"
+    rpa_csv = f"/home/jan/opti_frame/tmp/objective_function/RPA_{name}.csv"
 
     # Read template
     with open(template_file, "r") as template:
@@ -239,14 +239,16 @@ def objective_nd(x):
 
     center_x = 0.095 - np.sin(np.deg2rad(lower_angle)) * 0.05 + offset
     center_z = 0.01
+    print("Value: ", value)
 
     lpa_frac = determine_lpa_split(name_hash, center_x, center_z)
     print("LPA frac is: ", lpa_frac)
 
     if lpa_frac < 0.25:
+        print("Returning: inf")
         return 1e9
 
-    print("Value: ", x)
+    print("Returning: ", value)
 
     return value
 
