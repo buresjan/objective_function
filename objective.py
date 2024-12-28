@@ -210,6 +210,7 @@ def determine_lpa_split(name, center_x, center_z):
 
 
 def objective_nd(x):
+    print("Point: ", x)
     offset = x[0]
     lower_angle = x[1]
     upper_angle = x[2]
@@ -247,9 +248,12 @@ def objective_nd(x):
     center_z = 0.01
 
     lpa_frac = determine_lpa_split(name_hash, center_x, center_z)
+    print("LPA frac is: ", lpa_frac)
 
     if lpa_frac < 0.25:
         return 1e9
+
+    print("Value: ", x)
 
     return value
 
