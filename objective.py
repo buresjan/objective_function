@@ -158,6 +158,57 @@ def monitor_directory(filename, directory="/home/jan/gp/gp3/mnt/gp3/home/bures/t
         time.sleep(60)
 
 
+def count_lines_and_remove(file_path):
+    """Count lines in a file and remove the file."""
+    try:
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+        os.remove(file_path)
+        return len(lines)
+    except FileNotFoundError:
+        print(f"File not found: {file_path}")
+        return 0
+
+
+def determine_lpa_split(name, center_x, center_z):
+    template_file = "/home/jan/opti_frame/objective-function/lpa-to-rpa-template.py"
+    filled_file = f"/home/jan/opti_frame/objective-function/tmp/lpa-to-rpa-filled_{name}.py"
+    lpa_csv = f"/home/jan/opti_frame/tmp/objective-function/LPA_{name}.csv"
+    rpa_csv = f"/home/jan/opti_frame/tmp/objective-function/RPA_{name}.csv"
+
+    # Read template
+    with open(template_file, "r") as template:
+        content = template.read()
+
+    # Replace placeholders
+    content = content.replace("path_to_data", f"/home/jan/gp/gp3/mnt/gp3/home/bures/results_sim_1_res04_{name}/vtk3D/block000_1.vtk")
+    content = content.replace("center_x", str(center_x))
+    content = content.replace("center_z", str(center_z))
+    content = content.replace("LPA_path", lpa_csv)
+    content = content.replace("RPA_path", rpa_csv)
+
+    # Write the filled script
+    with open(filled_file, "w") as filled:
+        filled.write(content)
+
+    # Run the filled script
+    os.system(f"pvpython {filled_file}")
+
+    # Delete the filled script
+    os.remove(filled_file)
+
+    # Process LPA.csv
+    lpa_lines = count_lines_and_remove(lpa_csv)
+
+    # Process RPA.csv
+    rpa_lines = count_lines_and_remove(rpa_csv)
+
+    # Calculate and print the fraction
+    fraction = lpa_lines / (lpa_lines + rpa_lines) if (lpa_lines + rpa_lines) > 0 else 0
+
+    return fraction
+
+
 def objective_nd(x):
     offset = x[0]
     lower_angle = x[1]
@@ -166,25 +217,25 @@ def objective_nd(x):
     lower_flare = x[4]
 
     if offset > 1.0:
-        return np.array([1e9])
+        return 1e9
     if offset < -1.0:
-        return np.array([1e9])
+        return 1e9
     if lower_angle < -25.0:
-        return np.array([1e9])
+        return 1e9
     if lower_angle > 25.0:
-        return np.array([1e9])
+        return 1e9
     if upper_angle < -25.0:
-        return np.array([1e9])
+        return 1e9
     if upper_angle > 25.0:
-        return np.array([1e9])
+        return 1e9
     if upper_flare < 0.0:
-        return np.array([1e9])
+        return 1e9
     if upper_flare > 0.0025:
-        return np.array([1e9])
+        return 1e9
     if lower_flare < 0.0:
-        return np.array([1e9])
+        return 1e9
     if lower_flare > 0.0025:
-        return np.array([1e9])
+        return 1e9
 
     name_hash = generate_geometry(x)
     move_files(name_hash)
@@ -192,7 +243,15 @@ def objective_nd(x):
     run_job(name_hash)
     value = monitor_directory(name_hash)
 
-    return np.array([value])
+    center_x = 0.095 - np.sin(np.deg2rad(lower_angle)) * 0.05 + offset
+    center_z = 0.01
+
+    lpa_frac = determine_lpa_split(name_hash, center_x, center_z)
+
+    if lpa_frac < 0.25:
+        return 1e9
+
+    return value
 
 
 if __name__ == "__main__":
