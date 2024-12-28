@@ -139,17 +139,10 @@ def monitor_directory(filename, directory="/home/jan/gp/gp3/mnt/gp3/home/bures/t
                     header=None,
                     names=[
                         "Time",
-                        "Stress(1)",
-                        "KE",
-                        "TKE",
-                        "Outflow LPA",
-                        "Outflow RPA",
-                        "Stress(2)",
-                        "Stress(3)",
-                        "Stress(Tot)",
+                        "Stress",
                     ],
                 )
-                value = data[data["Time"] > 7.5]["Stress(2)"].mean()
+                value = data[data["Time"] > 7.5]["Stress"].mean()
             except Exception as e:
                 print(f"An error occurred while processing the file: {e}")
             return value
