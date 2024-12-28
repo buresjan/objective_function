@@ -216,17 +216,17 @@ def objective_nd(x):
     upper_flare = x[3]
     lower_flare = x[4]
 
-    if offset > 1.0:
+    if offset > 0.01:
         return 1e9
-    if offset < -1.0:
+    if offset < -0.01:
         return 1e9
-    if lower_angle < -25.0:
+    if lower_angle < -20.0:
         return 1e9
-    if lower_angle > 25.0:
+    if lower_angle > 20.0:
         return 1e9
-    if upper_angle < -25.0:
+    if upper_angle < -20.0:
         return 1e9
-    if upper_angle > 25.0:
+    if upper_angle > 20.0:
         return 1e9
     if upper_flare < 0.0:
         return 1e9
